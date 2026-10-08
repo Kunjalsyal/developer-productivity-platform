@@ -24,10 +24,10 @@ class AnthropicLLM:
 
 
 class OpenAILLM:
-    def __init__(self, api_key: str | None, model: str):
+    def __init__(self, api_key: str | None, model: str, base_url: str | None = None):
         from openai import OpenAI
 
-        self.client, self.model = OpenAI(api_key=api_key), model
+        self.client, self.model = OpenAI(api_key=api_key, base_url=base_url), model
 
     def complete(self, system: str, user: str, max_tokens: int = 1024) -> str:
         r = self.client.chat.completions.create(
@@ -57,7 +57,13 @@ def get_llm() -> LLMClient:
     if s.llm_provider == "anthropic":
         return AnthropicLLM(s.anthropic_api_key, s.llm_model or "claude-sonnet-5-5")
     if s.llm_provider == "openai":
-        return OpenAILLM(s.openai_api_key, s.llm_model or "gpt-4o-mini")
+        return OpenAILLM(s.openai_api_key, s.llm_model or "gpt-4o-mini", s.openai_base_url)
+    if s.llm_provider == "groq":  # free tier, OpenAI-compatible API
+        return OpenAILLM(s.groq_api_key, s.llm_model or "llama-3.3-70b-versatile",
+                         s.openai_base_url or "https://api.groq.com/openai/v1")
+    if s.llm_provider == "ollama":  # fully local, no key
+        return OpenAILLM("ollama", s.llm_model or "llama3.2",
+                         s.openai_base_url or "http://host.docker.internal:11434/v1")
     if s.llm_provider == "fake":
         return FakeLLM()
     raise ValueError(f"unknown LLM_PROVIDER: {s.llm_provider}")
