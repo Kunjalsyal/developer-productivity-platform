@@ -4,7 +4,7 @@ A developer tool for exploring and understanding large GitHub repositories throu
 
 ## Live Demo
 
-**Frontend:** [https://devplatform-web-rges.onrender.com](https://devplatform-web-rges.onrender.com)
+**Frontend:** https://devplatform-web-uhpw.onrender.com/
 
 The deployed application connects a React frontend to a FastAPI backend and PostgreSQL database with pgvector.
 
