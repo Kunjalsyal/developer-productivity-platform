@@ -23,8 +23,6 @@ services:
         value: '["*"]'
       - key: AUTO_CREATE_SCHEMA
         value: "true"
-      - key: APP_SECRET
-        generateValue: true
 
   - type: web
     name: devplatform-web
@@ -38,9 +36,3 @@ services:
           name: devplatform-api
           type: web
           envVarKey: RENDER_EXTERNAL_URL
-
-databases:
-  - name: devplatform-db
-    plan: free
-    region: oregon
-    postgresMajorVersion: "18"
