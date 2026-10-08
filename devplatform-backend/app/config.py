@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     llm_model: str | None = None
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
+      groq_api_key: str | None = None
+    openai_base_url: str | None = None
     llm_max_tokens: int = 1024
 
     top_k: int = 8
