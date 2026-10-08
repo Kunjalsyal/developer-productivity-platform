@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: devplatform-api
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: devplatform-backend
+    buildCommand: pip install -r requirements-core.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: devplatform-db
+          property: connectionString
+      - key: EMBEDDING_BACKEND
+        value: hash
+      - key: EMBEDDING_DIM
+        value: "384"
+      - key: LLM_PROVIDER
+        value: fake
+      - key: CORS_ORIGINS
+        value: '["*"]'
+      - key: AUTO_CREATE_SCHEMA
+        value: "true"
+      - key: APP_SECRET
+        generateValue: true
+
+  - type: web
+    name: devplatform-web
+    runtime: static
+    rootDir: devplatform-frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: devplatform-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: devplatform-db
+    plan: free
+    region: oregon
+    postgresMajorVersion: "18"
